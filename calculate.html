@@ -68,15 +68,6 @@
         <label for="count">每天投入次数：</label>
         <input type="number" id="count" placeholder="请输入每天投入次数" value="2" min="1">
 
-        <label>选择投资天数或目标金额：</label>
-        <select id="selector">
-            <option name="selector" value="day" checked> 投资天数</option>
-            <option name="selector" value="money">目标金额</option>
-        </select>
-
-        <!-- <label for="value">输入值：</label>
-        <input type="number" id="value" placeholder="请输入对应的值" max="100"> -->
-
 
         <label>选择投资天数或目标金额：</label>
         <select id="selector" onchange="updateInputLabel()">
@@ -85,6 +76,9 @@
         </select>
 
         
+        <!-- <label for="value">输入值：</label>
+        <input type="number" id="value" placeholder="请输入对应的值" max="100"> -->
+
         <label id="valueLabel" for="value">目标天数：</label>
         <input type="number" id="value" placeholder="请输入对应的值" max="100" min="1">
 
