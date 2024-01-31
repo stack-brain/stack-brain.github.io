@@ -22,6 +22,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
         label {
@@ -46,30 +47,68 @@
             cursor: pointer;
             font-size: 16px;
         }
+
+        #resultTextArea {
+            width: 100%;
+            height: 100px;
+            margin-top: 16px;
+            resize: none;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
     </style>
 </head>
 
 <body>
     <div id="calculator">
         <label for="count">每天投入次数：</label>
-        <input type="number" id="count" placeholder="请输入每天投入次数">
+        <input type="number" id="count" placeholder="请输入每天投入次数" value="2" min="1">
 
-        <label>选择投资天数或目标账号余额：</label>
+        <label>选择投资天数或目标金额：</label>
         <select id="selector">
             <option name="selector" value="day" checked> 投资天数</option>
-            <option name="selector" value="money">目标账号余额</option>
+            <option name="selector" value="money">目标金额</option>
         </select>
 
-        <label for="value">输入值：</label>
-        <input type="number" id="value" placeholder="请输入对应的值" max="100">
+        <!-- <label for="value">输入值：</label>
+        <input type="number" id="value" placeholder="请输入对应的值" max="100"> -->
+
+
+        <label>选择投资天数或目标金额：</label>
+        <select id="selector" onchange="updateInputLabel()">
+            <option name="selector" value="day" checked> 投资天数</option>
+            <option name="selector" value="money">目标金额</option>
+        </select>
+
+        
+        <label id="valueLabel" for="value">目标天数：</label>
+        <input type="number" id="value" placeholder="请输入对应的值" max="100" min="1">
 
         <label for="initialAmount">初始账号金额：</label>
         <input type="number" id="initialAmount" placeholder="请输入初始账号金额">
 
         <button onclick="calculate()">计算</button>
+        <!-- 新增的文本框用于展示结果 -->
+        <textarea id="resultTextArea" readonly></textarea>
     </div>
 
     <script>
+
+
+        function updateInputLabel() {
+            const selector = document.querySelector('option[name="selector"]:checked');
+            const valueLabel = document.getElementById('valueLabel');
+
+            if (selector.value === 'day') {
+                valueLabel.innerHTML = '目标天数：<span style="color: red;">请输入天数</span>';
+            } else if (selector.value === 'money') {
+                valueLabel.innerHTML = '目标金额：<span style="color: blue;">请输入目标金额</span>';
+            }
+        }
 
         function calculate() {
             const count = parseFloat(document.getElementById('count').value);
@@ -79,6 +118,11 @@
 
             if (!count || !selector || !value || !initialAmount) {
                 alert("请填写所有必填项！");
+                return;
+            }
+
+            if (selector.value === 'day' && (value < 1 || value % 1 !== 0)) {
+                alert("投资天数必须是正整数！");
                 return;
             }
 
@@ -100,9 +144,10 @@
 
 
         function calculateMoney(count, day, needMoney, x) {
-            if(day ==0 ){
+            let res_message = ''
+            if (day == 0) {
                 console.log(`传入值 本金：${x}  每天投入次数：${count} 期望金额：${needMoney} `)
-            }else{
+            } else {
                 console.log(`传入值 本金：${x}  每天投入次数：${count}  投的天数：${day} `)
             }
 
@@ -144,7 +189,15 @@
                     break;
                 }
             }
-            console.log(`一共需要投资${lastDay}天，投资${lastCountSum}次可挣账号余额：${x}`);
+            res_message = `一共需要投资${lastDay}天，投资${lastCountSum}次的账号余额：${x}`
+            console.log(res_message);
+
+            // 修改结果显示方式
+            if (String(res_message).length > 0) {
+                document.getElementById('resultTextArea').value = res_message;
+                alert(res_message);
+            }
+
         }
 
     </script>
