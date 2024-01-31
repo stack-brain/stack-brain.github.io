@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>投资计算器</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>投计算器</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,13 +72,13 @@
         <input type="number" id="count" placeholder="请输入每天投入次数" value="2" min="1">
 
 
-        <label>选择投资天数或目标金额：</label>
+        <label>选择投天数或目标金额：</label>
         <select id="selector" onchange="updateInputLabel()">
-            <option name="selector" value="day" checked> 投资天数</option>
+            <option name="selector" value="day" checked> 投天数</option>
             <option name="selector" value="money">目标金额</option>
         </select>
 
-        
+
         <!-- <label for="value">输入值：</label>
         <input type="number" id="value" placeholder="请输入对应的值" max="100"> -->
 
@@ -116,16 +119,16 @@
             }
 
             if (selector.value === 'day' && (value < 1 || value % 1 !== 0)) {
-                alert("投资天数必须是正整数！");
+                alert("投天数必须是正整数！");
                 return;
             }
 
             if (selector.value === 'day' && (value < 1 || value > 100)) {
-                alert("投资天数必须在 1 到 100 之间！");
+                alert("投天数必须在 1 到 100 之间！");
                 return;
             }
             if (selector.value === 'money' && (value < 1 || value > 1000000)) {
-                alert("投资金额必须在 1 到 100W 之间！");
+                alert("投金额必须在 1 到 100W 之间！");
                 return;
             }
 
@@ -139,9 +142,11 @@
 
         function calculateMoney(count, day, needMoney, x) {
             let res_message = ''
+            let hasChooseDay = 0
             if (day == 0) {
                 console.log(`传入值 本金：${x}  每天投入次数：${count} 期望金额：${needMoney} `)
             } else {
+                hasChooseDay = 1
                 console.log(`传入值 本金：${x}  每天投入次数：${count}  投的天数：${day} `)
             }
 
@@ -171,19 +176,23 @@
                     console.log(`第${dayItem}天，第${countItem}次投入金额：${y}`);
                     console.log(`第${dayItem}天，第${countItem}次投入挣的钱：${z}`);
                     console.log(`第${dayItem}天，第${countItem}次投入挣钱之后的账号余额：${x}`);
-
+                    if (hasChooseDay == 0) {
+                        if (x >= needMoney) {
+                            lastCountSum = (dayItem - 1) * count + countItem;
+                            break;
+                        }
+                    }
+                    lastCountSum = (dayItem - 1) * count + countItem;
+                }
+                if (hasChooseDay == 0) {
                     if (x >= needMoney) {
-                        lastCountSum = (dayItem - 1) * count + countItem;
+                        lastDay = dayItem;
                         break;
                     }
                 }
-
-                if (x >= needMoney) {
-                    lastDay = dayItem;
-                    break;
-                }
+                lastDay = dayItem;
             }
-            res_message = `一共需要投资${lastDay}天，投资${lastCountSum}次的账号余额：${x}`
+            res_message = `一共需要投${lastDay}天，需要投${lastCountSum}次，最终账号余额：${x}`
             console.log(res_message);
 
             // 修改结果显示方式
